@@ -44,10 +44,17 @@ export async function pullPlayersToScene(
         return;
     }
 
-    for (const userId of selectedUsers) {
-        console.debug(
-            `Pull Players to Scene | Pulling ${userId} to ${sceneId}`,
-        );
-        game?.socket?.emit("pullToScene", sceneId, userId);
+    const scene = game?.scenes?.get(sceneId);
+
+    if (!scene || selectedUsers.length === 0) {
+        return;
     }
+
+    console.debug(
+        `Pull Players to Scene | Pulling ${selectedUsers.join(", ")} to ${sceneId}`,
+    );
+
+    // Use the public API rather than emitting the core "pullToScene" socket
+    // event directly, whose arguments changed in v14 (Scene levels).
+    scene.pullUsers(selectedUsers);
 }

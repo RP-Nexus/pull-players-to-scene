@@ -1,0 +1,62 @@
+name: Release Creation
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm lint
+
+      # Type-checks and builds into ./dist (static/* is copied in by vite)
+      - run: pnpm build
+
+      # Substitute the version and URLs in the built module.json
+      - name: Update module.json for this release
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+          REPO_URL: https://github.com/${{ github.repository }}
+        run: |
+          VERSION="${TAG#v}"
+          jq --arg version "$VERSION" \
+             --arg url "$REPO_URL" \
+             --arg manifest "$REPO_URL/releases/latest/download/module.json" \
+             --arg download "$REPO_URL/releases/download/$TAG/module.zip" \
+             '.version = $version | .url = $url | .manifest = $manifest | .download = $download' \
+             dist/module.json > dist/module.json.tmp
+          mv dist/module.json.tmp dist/module.json
+
+      # Zip the contents of dist (module.json at the zip root)
+      - name: Create module zip
+        working-directory: dist
+        run: zip -r ../module.zip .
+
+      - name: Update Release with Files
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true # Set this to false if you want to prevent updating existing releases
+          name: ${{ github.event.release.name }}
+          draft: ${{ github.event.release.draft }}
+          prerelease: ${{ github.event.release.prerelease }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "./dist/module.json, ./module.zip"
+          tag: ${{ github.event.release.tag_name }}
+          body: ${{ github.event.release.body }}

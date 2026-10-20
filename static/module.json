@@ -11,7 +11,7 @@
     "version": "2.0.0",
     "compatibility": {
         "minimum": 13,
-        "verified": 13
+        "verified": 14
     },
     "languages": [
         {
@@ -23,7 +23,7 @@
     "esmodules": ["module.js"],
     "styles": ["css/pull-to-scene.css"],
     "url": "https://github.com/Mr-Byte/pull-players-to-scene",
-    "download": "https://github.com/Mr-Byte/pull-players-to-scene/releases/latest/download/pull-players-to-scene.zip",
+    "download": "https://github.com/Mr-Byte/pull-players-to-scene/releases/latest/download/module.zip",
     "manifest": "https://github.com/Mr-Byte/pull-players-to-scene/releases/latest/download/module.json",
     "bugs": "https://github.com/Mr-Byte/pull-players-to-scene/issues",
     "license": "MIT"
