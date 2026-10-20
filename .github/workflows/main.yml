@@ -13,21 +13,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: pnpm
+          node-version: 24
 
-      - run: pnpm install --frozen-lockfile
+      - run: npm install
 
-      - run: pnpm lint
+      - run: npm run lint
 
       # Type-checks and builds into ./dist (static/* is copied in by vite)
-      - run: pnpm build
+      - run: npm run build
 
       # Substitute the version and URLs in the built module.json
       - name: Update module.json for this release
