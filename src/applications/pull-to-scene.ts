@@ -18,15 +18,17 @@ export async function pullPlayersToScene(
     try {
         const result = await foundry.applications.api.DialogV2.prompt({
             window: {
-                title: game?.i18n?.localize(
-                    "pull-players-to-scene.pull-players-title",
-                ),
+                title:
+                    game?.i18n?.localize(
+                        "pull-players-to-scene.pull-players-title",
+                    ) ?? "",
             },
             content,
             ok: {
-                label: game?.i18n?.localize("pull-players-to-scene.button"),
-                callback: (_event, button, _dialog) => {
-                    let results = button.form?.querySelectorAll(
+                label:
+                    game?.i18n?.localize("pull-players-to-scene.button") ?? "",
+                callback: (_event: Event, button: HTMLButtonElement) => {
+                    const results = button.form?.querySelectorAll<HTMLInputElement>(
                         'input[type="checkbox"][name="player"]:checked',
                     );
 
@@ -39,7 +41,7 @@ export async function pullPlayersToScene(
             },
         });
 
-        selectedUsers = result ?? [];
+        selectedUsers = Array.isArray(result) ? result : [];
     } catch {
         return;
     }

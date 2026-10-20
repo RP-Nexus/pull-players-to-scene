@@ -5,6 +5,8 @@ type ContextMenuEntries =
 
 function getContextOption(): foundry.applications.ux.ContextMenu.Entry<HTMLElement> {
     return {
+        // v14 reads `label`; v13 reads `name`.
+        label: "pull-players-to-scene.context-menu",
         name: "pull-players-to-scene.context-menu",
         icon: '<i class="fas fa-directions"></i>',
         condition: (_) => game?.user?.isGM ?? false,
