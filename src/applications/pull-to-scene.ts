@@ -4,7 +4,7 @@ export async function pullPlayersToScene(
     thumb: string | null,
     users: User[],
 ): Promise<void> {
-    const content = await renderTemplate(
+    const content = await foundry.applications.handlebars.renderTemplate(
         "modules/pull-players-to-scene/templates/pull-to-scene.hbs",
         {
             users: users.filter((user) => !user.isSelf && user.active),
